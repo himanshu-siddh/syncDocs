@@ -2,11 +2,11 @@
 
 import { randomUUID } from "crypto";
 
-import { DocumentRole } from "@prisma/client";
 import { hash } from "bcryptjs";
 import { describe, expect, it, afterAll, beforeEach } from "vitest";
 import * as Y from "yjs";
 
+import type { DocumentRole } from "@/types/document";
 import { cleanupTestData, disconnectTestPrisma, getTestPrisma } from "../../e2e/helpers/test-db";
 
 function toBytes(update: Uint8Array) {
@@ -39,8 +39,8 @@ describe("Sync API integration", () => {
         ownerId,
         members: {
           create: [
-            { userId: ownerId, role: DocumentRole.OWNER },
-            { userId: editorId, role: DocumentRole.EDITOR },
+            { userId: ownerId, role: "OWNER" satisfies DocumentRole },
+            { userId: editorId, role: "EDITOR" satisfies DocumentRole },
           ],
         },
       },

@@ -1,6 +1,8 @@
-import { DocumentRole, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "bcryptjs";
+
+import type { DocumentRole } from "../../src/types/document";
 
 let prisma: PrismaClient | undefined;
 
@@ -73,7 +75,7 @@ export async function createDocumentForUser(
       members: {
         create: {
           userId: owner.id,
-          role: DocumentRole.OWNER,
+          role: "OWNER" satisfies DocumentRole,
         },
       },
     },
