@@ -6,9 +6,8 @@ SyncDocs lets users create, edit, and share rich-text documents with **zero netw
 
 | | |
 |---|---|
-| **Live Demo** | _[Add live demo URL]_ |
-| **Repository** | _[Add GitHub repository URL]_ |
-| **Demo Video** | _[Add demo video link]_ |
+| **Live Demo** | [https://sync-docs-iota.vercel.app/](https://sync-docs-iota.vercel.app/) |
+| **Repository** | [https://github.com/himanshu-siddh/syncDocs](https://github.com/himanshu-siddh/syncDocs) |
 
 <!-- Screenshots -->
 <!-- ![SyncDocs editor](./docs/screenshots/editor.png) -->
@@ -242,7 +241,7 @@ No WebSocket or Socket.IO environment variables are required.
 
 ```bash
 # 1. Clone and install
-git clone [Add GitHub repository URL]
+git clone https://github.com/himanshu-siddh/syncDocs.git
 cd local-first-collab-editor
 npm install
 
@@ -384,7 +383,7 @@ The current architecture **intentionally uses HTTP background synchronization** 
 - **Operation compaction** — snapshot + prune old `SyncOperation` rows for long-lived documents
 - **OAuth providers** — Google/GitHub sign-in alongside credentials
 - **Encrypted local storage** — optional at-rest encryption for sensitive deployments
-- **Live demo & screenshots** — fill placeholders above for portfolio presentation
+- **Screenshots** — add editor, offline sync, and version history captures for portfolio presentation
 
 ---
 
@@ -395,5 +394,7 @@ Private / assignment project. Update this section if you open-source the reposit
 ---
 
 ## Author
+
+**[himanshu-siddh](https://github.com/himanshu-siddh)** — [LinkedIn](https://www.linkedin.com/in/himanshu-siddh-98aaa0416)
 
 Built as a full-stack assignment demonstrating local-first architecture, CRDT sync over HTTP, and production engineering practices.
