@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+.dark {
+  --background: #27272a;
+  --foreground: #f4f4f5;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.ProseMirror {
+  color: #18181b;
+  min-height: 60vh;
+  outline: none;
+  padding: 1.5rem;
+}
+
+.dark .ProseMirror {
+  color: #f4f4f5;
+}
+
+.ProseMirror * {
+  color: inherit;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #52525b;
+  content: "Start writing...";
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.dark .ProseMirror p.is-editor-empty:first-child::before {
+  color: #a1a1aa;
+}
+
+.ProseMirror p {
+  margin: 0.75rem 0;
+}
+
+.ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.75rem;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 650;
+  margin: 1rem 0 0.5rem;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #d4d4d8;
+  color: #52525b;
+  margin: 1rem 0;
+  padding-left: 1rem;
+}
+
+.dark .ProseMirror blockquote {
+  border-left-color: #52525b;
+  color: #d4d4d8;
 }

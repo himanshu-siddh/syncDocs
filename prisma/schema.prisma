@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DocumentRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum SyncOperationKind {
+  YJS_UPDATE
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String
+  accounts      Account[]
+  sessions      Session[]
+  documents     DocumentMember[]
+  createdDocs   Document[]     @relation("CreatedDocuments")
+  snapshots     DocumentSnapshot[]
+  operations    SyncOperation[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model Document {
+  id          String             @id @default(cuid())
+  title       String
+  ownerId     String
+  owner       User               @relation("CreatedDocuments", fields: [ownerId], references: [id], onDelete: Cascade)
+  members     DocumentMember[]
+  operations  SyncOperation[]
+  snapshots   DocumentSnapshot[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([ownerId])
+}
+
+model DocumentMember {
+  id         String       @id @default(cuid())
+  documentId String
+  userId     String
+  role       DocumentRole
+  document   Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([documentId, userId])
+  @@index([userId])
+}
+
+model SyncOperation {
+  id         String            @id
+  documentId String
+  userId     String
+  kind       SyncOperationKind @default(YJS_UPDATE)
+  payload    Bytes
+  vector     Json?
+  createdAt  DateTime          @default(now())
+  document   Document          @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, createdAt])
+  @@index([userId])
+}
+
+model DocumentSnapshot {
+  id         String   @id @default(cuid())
+  documentId String
+  userId     String
+  title      String
+  state      Bytes
+  summary    String?
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, createdAt])
+}
