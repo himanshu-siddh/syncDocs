@@ -1,8 +1,7 @@
-import { DocumentRole } from "@prisma/client";
-
 import { prisma } from "@/db/prisma";
+import type { DocumentRole } from "@/types/document";
 
-const writeRoles = new Set<DocumentRole>([DocumentRole.OWNER, DocumentRole.EDITOR]);
+const writeRoles = new Set<DocumentRole>(["OWNER", "EDITOR"]);
 
 export async function getDocumentRole(documentId: string, userId: string) {
   const membership = await prisma.documentMember.findUnique({
@@ -43,7 +42,7 @@ export async function assertCanWriteDocument(documentId: string, userId: string)
 export async function assertCanOwnDocument(documentId: string, userId: string) {
   const role = await assertDocumentRole(documentId, userId);
 
-  if (role !== DocumentRole.OWNER) {
+  if (role !== "OWNER") {
     throw new Response("Only the owner can manage document access", { status: 403 });
   }
 

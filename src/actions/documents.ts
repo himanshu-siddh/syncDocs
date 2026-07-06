@@ -1,6 +1,5 @@
 "use server";
 
-import { DocumentRole } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -22,7 +21,7 @@ export async function createDocumentAction(formData: FormData) {
       members: {
         create: {
           userId: user.id,
-          role: DocumentRole.OWNER,
+          role: "OWNER",
         },
       },
     },

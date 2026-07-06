@@ -1,4 +1,3 @@
-import { DocumentRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/db/prisma";
@@ -70,7 +69,7 @@ export async function POST(request: Request) {
         members: {
           create: {
             userId: user.id,
-            role: DocumentRole.OWNER,
+            role: "OWNER",
           },
         },
       },
