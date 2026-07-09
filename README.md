@@ -44,7 +44,7 @@ For a deeper security write-up, see [SECURITY.md](./SECURITY.md).
 | **Background synchronization** | HTTP push/pull of Yjs updates via Dexie-backed queue, debounced upload (~750 ms), and manual “Sync now” |
 | **Multi-user collaboration** | Shared documents converge through periodic sync; Yjs merges concurrent edits deterministically |
 | **Version history** | Manual snapshots, timeline view, and restore as a new append-only operation |
-| **AI assistant** | Grammar, rewrite, summarize, and title generation via Vercel AI SDK + OpenAI |
+| **AI assistant** | Grammar, rewrite, summarize, and title generation via Vercel AI SDK + Google Gemini |
 | **Authentication** | Auth.js credentials provider with bcrypt password hashing and JWT sessions |
 | **Authorization** | Document roles: **Owner**, **Editor**, **Viewer** — enforced on every API route |
 
@@ -170,7 +170,7 @@ Two users editing the same document—even offline on different devices—conver
 | Database | PostgreSQL + Prisma 7 (`@prisma/adapter-pg`) |
 | Auth | Auth.js v5 (credentials, JWT sessions) |
 | Validation | Zod 4 |
-| AI | Vercel AI SDK + OpenAI |
+| AI | Vercel AI SDK + Google Gemini |
 | Unit tests | Vitest, React Testing Library |
 | E2E tests | Playwright |
 | CI | GitHub Actions |
@@ -223,8 +223,8 @@ Copy `.env.example` to `.env` and fill in values:
 | `DATABASE_URL` | Yes | PostgreSQL connection string (e.g. [Neon](https://neon.tech)) |
 | `AUTH_SECRET` | Yes | Random secret for JWT/session signing (`openssl rand -base64 32`) |
 | `NEXT_PUBLIC_APP_URL` | Yes | Public app URL (`http://localhost:3000` in dev) |
-| `OPENAI_API_KEY` | For AI | OpenAI API key for the AI assistant panel |
-| `OPENAI_MODEL` | No | Model name (default: `gpt-4o-mini`) |
+| `GEMINI_API_KEY` | For AI | Google AI API key for the AI assistant panel |
+| `GEMINI_MODEL` | No | Gemini model name (default: `gemini-2.5-flash`) |
 
 No WebSocket or Socket.IO environment variables are required.
 
@@ -338,7 +338,8 @@ SyncDocs deploys as a **single Next.js application**. All synchronization runs o
    - `DATABASE_URL` — Neon connection string (`sslmode=verify-full` recommended)
    - `AUTH_SECRET` — random 32+ byte secret
    - `NEXT_PUBLIC_APP_URL` — your production Vercel URL
-   - `OPENAI_API_KEY` — optional, for AI features
+   - `GEMINI_API_KEY` — optional, for AI features
+   - `GEMINI_MODEL` — optional (default: `gemini-2.5-flash`)
 3. **Run migrations** against the production database:
 
    ```bash

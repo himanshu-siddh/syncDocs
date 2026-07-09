@@ -281,7 +281,7 @@ The Auth.js proxy blocks unauthenticated access to pages and non-auth API routes
 - Requires authentication
 - Requires document membership (except offline `local-*` documents)
 - Input text capped at 12,000 characters
-- OpenAI API key never exposed to client
+- Gemini API key never exposed to client
 - Provider errors mapped to safe client messages (no stack traces)
 - `maxRetries: 0` on AI calls to avoid retry amplification
 
@@ -314,7 +314,7 @@ For production, apply rate limits at the **edge or API gateway**:
 | `/api/auth/*` | 5–10 req/min/IP | Credential stuffing protection |
 | `/api/documents/*/sync/push` | 30–60 req/min/user | Sync abuse |
 | `/api/documents/*/sync/pull` | 60–120 req/min/user | Read abuse |
-| `/api/ai` | 10–20 req/min/user | Cost control (OpenAI) |
+| `/api/ai` | 10–20 req/min/user | Cost control (Gemini) |
 | Global `/api/*` | 100–300 req/min/IP | Baseline flood protection |
 
 Suggested tools: Vercel Firewall, Cloudflare Rate Limiting, Redis sliding-window middleware, or `@upstash/ratelimit` in route handlers.
@@ -327,7 +327,7 @@ This threat model assumes:
 
 1. **PostgreSQL credentials** are known only to the application server and are not exposed to clients.
 2. **`AUTH_SECRET`** is a cryptographically random value (≥ 32 bytes) and is never committed to version control.
-3. **`OPENAI_API_KEY`** is server-side only; clients never receive it.
+3. **`GEMINI_API_KEY`** is server-side only; clients never receive it.
 4. **Users' browsers** may be compromised; local IndexedDB content is not encrypted at rest by this application.
 5. **Collaborators with Editor or Owner roles** are trusted to submit valid Yjs updates; the server validates size and authorization, not CRDT semantic correctness.
 6. **HTTPS** is enforced in production so session cookies and sync payloads are not transmitted in cleartext.
