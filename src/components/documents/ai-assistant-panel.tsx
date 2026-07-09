@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import type { Editor } from "@tiptap/react";
-import { Sparkles } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,13 @@ type AiAssistantPanelProps = {
   editor: Editor | null;
   canWrite: boolean;
   onTitleGenerated: (title: string) => void;
+};
+
+const actionLabels: Record<AiAction, string> = {
+  grammar: "Grammar",
+  rewrite: "Rewrite",
+  summarize: "Summarize",
+  title: "Title",
 };
 
 function textToParagraphHtml(text: string) {
@@ -31,17 +38,20 @@ export function AiAssistantPanel({
   onTitleGenerated,
 }: AiAssistantPanelProps) {
   const [result, setResult] = useState("");
-  const [pending, startTransition] = useTransition();
+  const [loadingAction, setLoadingAction] = useState<AiAction | null>(null);
 
-  const runAction = (action: AiAction) => {
-    startTransition(async () => {
-      const sourceText = editor?.getText().trim();
+  const runAction = async (action: AiAction) => {
+    const sourceText = editor?.getText().trim();
 
-      if (!sourceText) {
-        setResult("Add document text before using AI.");
-        return;
-      }
+    if (!sourceText) {
+      setResult("Add document text before using AI.");
+      return;
+    }
 
+    setLoadingAction(action);
+    setResult("");
+
+    try {
       const response = await fetch("/api/ai", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -53,7 +63,7 @@ export function AiAssistantPanel({
       });
 
       if (!response.ok) {
-        let errorMessage = "AI request failed. Check your OpenAI configuration.";
+        let errorMessage = "AI request failed. Check your Gemini configuration.";
 
         try {
           const payload = (await response.json()) as { message?: string; error?: string };
@@ -76,7 +86,9 @@ export function AiAssistantPanel({
       if (action === "title") {
         onTitleGenerated(payload.text);
       }
-    });
+    } finally {
+      setLoadingAction(null);
+    }
   };
 
   return (
@@ -89,20 +101,28 @@ export function AiAssistantPanel({
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
-          <Button type="button" variant="secondary" disabled={pending || !editor} onClick={() => runAction("grammar")}>
-            Grammar
-          </Button>
-          <Button type="button" variant="secondary" disabled={pending || !editor} onClick={() => runAction("rewrite")}>
-            Rewrite
-          </Button>
-          <Button type="button" variant="secondary" disabled={pending || !editor} onClick={() => runAction("summarize")}>
-            Summarize
-          </Button>
-          <Button type="button" variant="secondary" disabled={pending || !editor} onClick={() => runAction("title")}>
-            Title
-          </Button>
+          {(Object.keys(actionLabels) as AiAction[]).map((action) => {
+            const isLoading = loadingAction === action;
+
+            return (
+              <Button
+                key={action}
+                type="button"
+                variant="secondary"
+                disabled={loadingAction !== null || !editor}
+                onClick={() => void runAction(action)}
+              >
+                {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                {actionLabels[action]}
+              </Button>
+            );
+          })}
         </div>
-        <Textarea value={result} readOnly placeholder="AI output appears here." />
+        <Textarea
+          value={result}
+          readOnly
+          placeholder={loadingAction ? "Generating..." : "AI output appears here."}
+        />
         {!canWrite ? <p className="text-xs text-zinc-500 dark:text-zinc-300">Viewer role can run AI but cannot apply edits.</p> : null}
       </CardContent>
     </Card>

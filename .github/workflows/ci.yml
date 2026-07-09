@@ -19,7 +19,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/local_docs
       AUTH_SECRET: ci-auth-secret-for-build-only
       NEXT_PUBLIC_APP_URL: http://localhost:3000
-      OPENAI_API_KEY: ci-openai-placeholder
+      GEMINI_API_KEY: ci-gemini-placeholder
 
     steps:
       - name: Checkout
@@ -73,7 +73,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/local_docs
       AUTH_SECRET: ci-auth-secret-for-e2e-only
       NEXT_PUBLIC_APP_URL: http://localhost:3000
-      OPENAI_API_KEY: ci-openai-placeholder
+      GEMINI_API_KEY: ci-gemini-placeholder
       CI: true
 
     steps:

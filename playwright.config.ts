@@ -36,7 +36,7 @@ export default defineConfig({
       DATABASE_URL: process.env.DATABASE_URL ?? "",
       AUTH_SECRET: process.env.AUTH_SECRET ?? "playwright-auth-secret",
       NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "playwright-openai-placeholder",
+      GEMINI_API_KEY: process.env.GEMINI_API_KEY ?? "playwright-gemini-placeholder",
     },
   },
 });
